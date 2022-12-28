@@ -132,7 +132,7 @@ def main(settings: src.settings.Settings):
     settings.freeze()
     src.logging.quiet = settings.quiet
     src.logging.message(
-        src.colors.success(f"Welcome to SolScan {src.cfg.VERSION}!"),
+        src.colors.success(f"Welcome to SolScan {src.cfg.VERSION}"),
         f"Settings: {settings}")
     tools = src.tools.load(settings.tools)
     if not tools:

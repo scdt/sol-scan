@@ -114,16 +114,13 @@ def cli_args(defaults):
 
 
 def cli(site_cfg=src.cfg.SITE_CFG):
+    sys.argv += "-t slither oyente osiris smartcheck mythril".split()
     settings = src.settings.Settings()
-    # add site settings
     if os.path.exists(site_cfg):
         settings.update(site_cfg)
-    # parse command line
     cli_settings = cli_args(settings)
-    # add settings from config file specified on command line
     if cli_settings["configuration"]:
         settings.update(cli_settings["configuration"])
-    # add settings from command line
     del cli_settings["configuration"]
     for k in [k for k, v in cli_settings.items() if v is None]:
         del cli_settings[k]

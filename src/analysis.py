@@ -126,7 +126,7 @@ def analyser(logqueue, taskqueue, tasks_total, tasks_started, tasks_completed, t
             tasks_started.value += 1
             started = tasks_started.value
         src.logging.message(
-            f"Starting task {started}/{tasks_total}: {src.colors.tool(task.tool.id)} and {src.colors.file(task.relfn)}",
+            f"{started}/{tasks_total}: {src.colors.tool(task.tool.id)} and {src.colors.file(task.relfn)}",
             "", logqueue)
 
     def post_analysis(duration):
@@ -139,7 +139,7 @@ def analyser(logqueue, taskqueue, tasks_total, tasks_started, tasks_completed, t
         etc = elapsed / completed * (tasks_total - completed) / task.settings.processes
         etc_fmt = datetime.timedelta(seconds=round(etc))
         duration_fmt = datetime.timedelta(seconds=round(duration))
-        src.logging.message(f"{completed}/{tasks_total} completed, ETC {etc_fmt}")
+        #src.logging.message(f"{completed}/{tasks_total} completed, ETC {etc_fmt}")
 
     while True:
         task = taskqueue.get()
@@ -191,7 +191,7 @@ def run(tasks, settings):
 
         # good bye
         duration = datetime.timedelta(seconds=round(time.time() - start_time))
-        src.logging.message(f"Analysis completed in {duration}.", "", logqueue)
+        src.logging.message(f"{duration}", "", logqueue)
 
     finally:
         src.logging.stop(logqueue)
