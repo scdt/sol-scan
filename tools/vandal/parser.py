@@ -1,5 +1,7 @@
-import io, os, tarfile
-import sb.parse_utils
+import io
+import os
+import tarfile
+import src.parse_utils
 
 VERSION = "2022/11/17"
 
@@ -21,10 +23,11 @@ ANALYSIS_COMPLETE = (
 DEPRECATED = "Warning: Deprecated type declaration"
 CANNOT_OPEN_FACT_FILE = "Cannot open fact file"
 
+
 def parse(exit_code, log, output):
     findings, infos = [], set()
-    errors, fails = sb.parse_utils.errors_fails(exit_code, log)
-    errors.discard("EXIT_CODE_1") # = no findings; EXIT_CODE_0 = findings
+    errors, fails = src.parse_utils.errors_fails(exit_code, log)
+    errors.discard("EXIT_CODE_1")  # = no findings; EXIT_CODE_0 = findings
 
     analysis_complete = set()
     for line in log:
@@ -68,10 +71,9 @@ def parse(exit_code, log, output):
                     fails.add(f"problem extracting {fn} from output archive: {e}")
                     continue
                 for line in contents.splitlines():
-                    finding = { "name": name, "address": int(line.strip(),16) }
+                    finding = {"name": name, "address": int(line.strip(), 16)}
                     findings.append(finding)
     except Exception as e:
         fails.add(f"error parsing results: {e}")
 
     return findings, infos, errors, fails
-

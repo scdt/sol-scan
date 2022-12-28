@@ -1,5 +1,5 @@
 import re
-import sb.parse_utils
+import src.parse_utils
 
 VERSION = "2022/11/11"
 
@@ -35,9 +35,9 @@ def is_relevant(line):
 def parse(exit_code, log, output):
     findings, infos = [], set()
     cleaned_log = filter(is_relevant, log)
-    errors, fails = sb.parse_utils.errors_fails(exit_code, cleaned_log)
+    errors, fails = src.parse_utils.errors_fails(exit_code, cleaned_log)
 
-    for f in list(fails): # iterate over a copy of "fails" such that it can be modified
+    for f in list(fails):  # iterate over a copy of "fails" such that it can be modified
         if f.startswith("exception (KeyError: <SSABasicBlock"):
             fails.remove(f)
             fails.add("exception (KeyError: <SSABasicBlock ...>)")
@@ -46,23 +46,27 @@ def parse(exit_code, log, output):
             fails.remove(f)
             fails.add("exception (RecursionError: maximum recursion depth exceeded)")
 
-    filename,contract = None,None
+    filename, contract = None, None
     for line in log:
-        if sb.parse_utils.add_match(errors, line, ERRORS):
+        if src.parse_utils.add_match(errors, line, ERRORS):
             fails.discard("exception (Exception)")
             continue
         m = ANALYSING.match(line)
         if m:
-            filename,contract = m[1].split(":") if ":" in m[1] else (m[1],None)
+            filename, contract = m[1].split(":") if ":" in m[1] else (m[1], None)
         m = VULNERABILITY.match(line)
         if m:
-            finding = { "name": m[1] }
-            if filename: finding["filename"] = filename
-            if contract: finding["contract"] = contract
-            if m[2]:     finding["function"] = m[2]
-            if m[3]:     finding["address"]  = int(m[3],16)
-            if m[4]:     finding["line"]   = int(m[4])
+            finding = {"name": m[1]}
+            if filename:
+                finding["filename"] = filename
+            if contract:
+                finding["contract"] = contract
+            if m[2]:
+                finding["function"] = m[2]
+            if m[3]:
+                finding["address"] = int(m[3], 16)
+            if m[4]:
+                finding["line"] = int(m[4])
             findings.append(finding)
 
     return findings, infos, errors, fails
-

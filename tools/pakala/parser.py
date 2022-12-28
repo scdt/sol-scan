@@ -1,8 +1,9 @@
-import re, ast
-import sb.parse_utils
+import re
+import ast
+import src.parse_utils
 
 VERSION = "2022/11/11"
-    
+
 FINDINGS = {
     "delegatecall bug",
     "selfdestruct bug",
@@ -14,6 +15,7 @@ COVERAGE = re.compile("Symbolic execution finished with coverage (.*).")
 FINISHED = re.compile("Nothing to report.|======> Bug found! Need .* transactions. <======")
 TRANSACTION = re.compile("Transaction [0-9]+, example solution:")
 
+
 def is_relevant(line):
     return not (
         line.startswith("Analyzing contract at")
@@ -22,11 +24,12 @@ def is_relevant(line):
         or line.startswith("Outcomes: ")
     )
 
+
 def parse(exit_code, log, output):
     findings, infos = [], set()
     cleaned_log = filter(is_relevant, log)
-    errors, fails = sb.parse_utils.errors_fails(exit_code, cleaned_log)
-    errors.discard("EXIT_CODE_1") # there will be an exception in fails anyway
+    errors, fails = src.parse_utils.errors_fails(exit_code, cleaned_log)
+    errors.discard("EXIT_CODE_1")  # there will be an exception in fails anyway
 
     analysis_completed = False
     in_tx = False
@@ -49,7 +52,7 @@ def parse(exit_code, log, output):
 
         m = FINDING.match(line)
         if m:
-            finding = { "name": m[1] }
+            finding = {"name": m[1]}
             findings.append(finding)
             continue
 

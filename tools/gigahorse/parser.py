@@ -1,11 +1,14 @@
-import io, json, tarfile
-import sb.parse_utils
+import io
+import json
+import tarfile
+import src.parse_utils
 
 VERSION = "2022/11/17"
 
+
 def parse(exit_code, log, output, FINDINGS):
     findings, infos = [], set()
-    errors, fails = sb.parse_utils.errors_fails(exit_code, log)
+    errors, fails = src.parse_utils.errors_fails(exit_code, log)
 
     if "Writing results to results.json" not in log:
         infos.add("analysis incomplete")
@@ -14,7 +17,7 @@ def parse(exit_code, log, output, FINDINGS):
 
     try:
         with io.BytesIO(output) as o, tarfile.open(fileobj=o) as tar:
-            results_json=tar.extractfile("results.json").read()
+            results_json = tar.extractfile("results.json").read()
         result = json.loads(results_json)
         for contract in result:
             filename = contract[0]
@@ -32,7 +35,7 @@ def parse(exit_code, log, output, FINDINGS):
                             break
                         i += 1
                     try:
-                        addresses.append(int(address[0:i],16))
+                        addresses.append(int(address[0:i], 16))
                     except:
                         pass
                 if addresses:
@@ -48,8 +51,6 @@ def parse(exit_code, log, output, FINDINGS):
                         "name": name
                     })
 
-
- 
     except Exception as e:
         fails.add(f"problem extracting results.json from docker container: {e}")
 

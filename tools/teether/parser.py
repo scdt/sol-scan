@@ -1,17 +1,17 @@
-import sb.parse_utils
+import src.parse_utils
 
 VERSION = "2022/11/11"
 
-FINDINGS = { "Ether leak" }
+FINDINGS = {"Ether leak"}
 
 
 def parse(exit_code, log, output):
     findings, infos = [], set()
-    errors, fails = sb.parse_utils.errors_fails(exit_code, log)
+    errors, fails = src.parse_utils.errors_fails(exit_code, log)
 
-    errors.discard("EXIT_CODE_1") # there will be an exception in fails anyway
+    errors.discard("EXIT_CODE_1")  # there will be an exception in fails anyway
     for f in list(fails):         # make a copy of fails, so we can modify it
-        if f.startswith("exception (teether.evm.exceptions."): # reported as error below
+        if f.startswith("exception (teether.evm.exceptions."):  # reported as error below
             fails.remove(f)
         elif f.startswith('exception (z3.z3types.Z3Exception: b"Argument '):
             fails.remove(f)
@@ -52,7 +52,6 @@ def parse(exit_code, log, output):
             fails.add("execution failed")
 
     if exploit:
-        findings = [ { "name": "Ether leak", "exploit": exploit } ]
+        findings = [{"name": "Ether leak", "exploit": exploit}]
 
     return findings, infos, errors, fails
-

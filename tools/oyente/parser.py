@@ -1,5 +1,5 @@
 import re
-import sb.parse_utils
+import src.parse_utils
 
 VERSION = "2022/11/11"
 
@@ -49,18 +49,18 @@ def parse(exit_code, log, output):
 
     findings, infos = [], set()
     cleaned_log = filter(is_relevant, log)
-    errors, fails = sb.parse_utils.errors_fails(exit_code, cleaned_log)
+    errors, fails = src.parse_utils.errors_fails(exit_code, cleaned_log)
     errors.discard('EXIT_CODE_1') # redundant: indicates error or vulnerability reported below
 
     analysis_completed = False
     filename,contract,weakness = None,None,None
     weaknesses = set()
     for line in log:
-        if sb.parse_utils.add_match(infos, line, INFOS):
+        if src.parse_utils.add_match(infos, line, INFOS):
             continue
-        if sb.parse_utils.add_match(errors, line, ERRORS):
+        if src.parse_utils.add_match(errors, line, ERRORS):
             continue
-        if sb.parse_utils.add_match(fails, line, FAILS):
+        if src.parse_utils.add_match(fails, line, FAILS):
             continue
 
         m = CONTRACT.match(line)

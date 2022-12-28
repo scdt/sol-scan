@@ -5,7 +5,7 @@ FROM ubuntu:20.04
 RUN \
   apt-get update && \
 #  apt-get install -y build-essential software-properties-common libssl-dev wget && \
-  apt-get install -y python3 python3-pip git curl lsb-release
+  apt-get install -y python3 python3-pip git curl lsrc-release
 # python-dev python-pip git psmisc lsof
 
 # Install souffle

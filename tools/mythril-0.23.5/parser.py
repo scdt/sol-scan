@@ -1,5 +1,5 @@
 import json
-import sb.parse_utils
+import src.parse_utils
 
 VERSION = "2022/11/11"
 
@@ -23,11 +23,11 @@ FINDINGS = {
 def parse(exit_code, log, output):
 
     findings, infos = [], set()
-    errors, fails = sb.parse_utils.errors_fails(exit_code, log)
+    errors, fails = src.parse_utils.errors_fails(exit_code, log)
 
     # Mythril catches all exceptions, prints a message "please report", and then prints the traceback.
     # So we consider all exceptions as fails (= non-intended interruptions)
-    for f in list(fails): # iterate over a copy of 'fails' such that it can be modified
+    for f in list(fails):  # iterate over a copy of 'fails' such that it can be modified
         if f.startswith("exception (mythril.laser.ethereum.transaction.transaction_models.TransactionEndSignal"):
             fails.remove(f)
             fails.add("exception (mythril.laser.ethereum.transaction.transaction_models.TransactionEndSignal)")
@@ -48,10 +48,10 @@ def parse(exit_code, log, output):
         if error:
             errors.add(error.split('.')[0])
         for issue in result.get("issues", []):
-            finding = { "name": issue["title"] }
-            for i,f in ( ("filename","filename"), ("contract","contract"),
-                ("function","function"), ("address","address"), ("lineno", "line"),
-                ("tx_sequence","exploit"), ("description","message"), ("severity","severity") ):
+            finding = {"name": issue["title"]}
+            for i, f in (("filename", "filename"), ("contract", "contract"),
+                         ("function", "function"), ("address", "address"), ("lineno", "line"),
+                         ("tx_sequence", "exploit"), ("description", "message"), ("severity", "severity")):
                 if i in issue:
                     finding[f] = issue[i]
             if "swc-id" in issue:
@@ -63,4 +63,3 @@ def parse(exit_code, log, output):
             findings.append(finding)
 
     return findings, infos, errors, fails
-

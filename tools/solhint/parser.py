@@ -1,4 +1,4 @@
-import sb.parse_utils
+import src.parse_utils
 
 VERSION = "2022/11/14"
 
@@ -59,9 +59,10 @@ FINDINGS = {
     "visibility-modifier-order",
 }
 
+
 def parse(exit_code, log, output):
     findings, infos = [], set()
-    errors, fails = sb.parse_utils.errors_fails(exit_code, log)
+    errors, fails = src.parse_utils.errors_fails(exit_code, log)
 
     for line in log:
         if ":" in line:
